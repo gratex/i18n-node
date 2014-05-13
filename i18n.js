@@ -275,15 +275,20 @@ i18n.getCatalog = function i18nGetCatalog(locale_or_request, locale) {
   }
 };
 
-i18n.overrideLocaleFromQuery = function (req) {
+i18n.overrideLocaleFromQuery = function (req, res, next) {
   if (req === null) {
-    return;
+    return next();
   }
   var urlObj = url.parse(req.url, true);
   if (urlObj.query.locale) {
     logDebug("Overriding locale from query: " + urlObj.query.locale);
-    i18n.setLocale(req, urlObj.query.locale.toLowerCase());
+    var newLocale = urlObj.query.locale.toLowerCase();
+    var setLocale = i18n.setLocale(req, newLocale);
+    if(setLocale == newLocale && cookiename) { //if new locale was set, set also cookie - so it is remembered
+      res.cookie(cookiename, setLocale);
+    }
   }
+  next();
 };
 
 // ===================
