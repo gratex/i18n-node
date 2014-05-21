@@ -18,7 +18,7 @@ var vsprintf = require('sprintf').vsprintf,
     locales = {},
     api = ['__', '__n', 'getLocale', 'setLocale', 'getCatalog'],
     pathsep = path.sep || '/', // ---> means win support will be available in node 0.8.x and above
-    defaultLocale, updateFiles, cookiename, extension, directory, indent;
+    defaultLocale, updateFiles, cookiename, extension, directory, indent, cookiePath;
 
 // public exports
 var i18n = exports;
@@ -34,6 +34,9 @@ i18n.configure = function i18nConfigure(opt) {
 
   // sets a custom cookie name to parse locale settings from
   cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
+  
+  // sets path to which cookie applies, when setting new cookie
+  cookiePath = (typeof opt.cookiePath === 'string') ? opt.cookiePath : null;
 
   // where to store json files
   directory = (typeof opt.directory === 'string') ? opt.directory : __dirname + pathsep + 'locales';
@@ -285,7 +288,7 @@ i18n.overrideLocaleFromQuery = function (req, res, next) {
     var newLocale = urlObj.query.locale.toLowerCase();
     var setLocale = i18n.setLocale(req, newLocale);
     if(setLocale == newLocale && cookiename) { //if new locale was set, set also cookie - so it is remembered
-      res.cookie(cookiename, setLocale);
+      res.cookie(cookiename, setLocale, {path: cookiePath});
     }
   }
   next();
