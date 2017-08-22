@@ -1,9 +1,10 @@
 node_modules/
 testlocales/
+coverage/
 .DS_Store
 /npm-debug.log
-
 /i18n-cov.js
 /coverage.html
-/locales/en.json
-/locales/de.json
+defaultlocales
+localestowrite
+localesmakeplural
